@@ -7,6 +7,8 @@ Currently to architecht a webpack configuration for multi page web applications,
   - May have different paths, may not even be in the same directory as the entry point.
   - Should contain _just_ the assets bundled for that entry.
   - You would have to create essentially a `html-webpack-plugin` for each entry however posses extra configuration challenges:
+  
+  An example for a Laravel 4 Application using Twig Templates
 
   ```
   const templatesFn = (modules, twigRoot, assetsRoot, shared) => {
