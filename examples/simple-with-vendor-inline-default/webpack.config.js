@@ -1,13 +1,14 @@
 const path = require('path');
-const webpack = require('webpack');
 const MultipageWebpackPlugin = require('../../src/plugin.js');
+const webpack = require('webpack');
 
 let config = {
   context: __dirname,
   entry: {
     a: './src/a/a.js',
     b: './src/b/b.js',
-    c: './src/c/c.js'
+    c: './src/c/c.js',
+    vendor: ['lodash']
   },
   output: {
     filename: '[name].chunk.js',

@@ -1,9 +1,8 @@
 const fs = require('fs'); 
 const path = require('path');
 
-debugger;
 let examples = fs.readdirSync("./examples").filter(function(string) {
-  return string !== "index.js";
+  return !["index.js", ".DS_Store"].includes(string);
 });
 
 console.log(examples);

@@ -1,9 +1,10 @@
-webpackJsonp([1,3],[
-/* 0 */,
-/* 1 */
+webpackJsonp([2,4],{
+
+/***/ 4:
 /***/ function(module, exports) {
 
 console.log("Module B");
 
 /***/ }
-],[1]);
+
+},[4]);
