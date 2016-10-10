@@ -15,25 +15,27 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
   let webpackConfigOptions = compiler.options;
 
   let entriesToCreateTemplatesFor = Object.keys(webpackConfigOptions.entry).filter(entry => {
-    return entry !== this.vendorChunkName;
+    return entry !== this.pluginOptions.vendorChunkName;
   });
 
   console.log("ENTRIES: ", entriesToCreateTemplatesFor);
+  console.log("SHARED: ", this.pluginOptions.sharedChunkName);
+
 
   entriesToCreateTemplatesFor.forEach( entryKey => {
     compiler.apply(
       new HtmlWebpackPlugin({
         filename: `./templates/${entryKey}/template.html`,
         chunkSortMode: 'dependency',
-        chunks: ['inline', this.vendorChunkName, entryKey, this.sharedChunkName]
+        chunks: ['inline', this.pluginOptions.vendorChunkName, entryKey, this.pluginOptions.sharedChunkName]
       })
     );
   });
 
   compiler.apply(
     new webpack.optimize.CommonsChunkPlugin({
-      name: `${this.sharedChunkName}`,
-      filename: `${this.sharedChunkName}.bundle.js`,
+      name: `${this.pluginOptions.sharedChunkName}`,
+      filename: `${this.pluginOptions.sharedChunkName}.bundle.js`,
       minChunks: 2,
       chunks: Object.keys(webpackConfigOptions.entry)
     }),      
