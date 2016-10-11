@@ -13,9 +13,9 @@ test.beforeEach('run webpack build first', async t => {
 
 // Run
 test('webpack should run successfully', async t => {
-  const stats = t.context.stats;
-  console.log("ENTRYPOINTS PROPERTY", stats);
-  t.truthy(stats);
+  let {stats, warnings, errors} = t.context.stats;
+
+  t.falsy(warnings.length && errors.length);
 });
 
 test.skip('it should emit a template for each entry point', async t => {
