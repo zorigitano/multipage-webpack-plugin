@@ -6,7 +6,7 @@
   "scripts": {
     "build:examples": "webpack --progress --colors --config ./examples",
     "build:debug": "node --debug-brk --inspect ./node_modules/webpack/bin/webpack.js --config ./examples",
-    "test": "npm run build:examples && ava",
+    "test": "npm run build:examples && ava --verbose",
     "test:watch": "npm test -- --watch"
   },
   "repository": {
