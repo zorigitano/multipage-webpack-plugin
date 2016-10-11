@@ -11,7 +11,7 @@ let config = {
   },
   output: {
     filename: '[name].chunk.js',
-    path: path.resolve(__dirname,'./dist')
+    path: path.join(__dirname,'./dist')
   },
   plugins: [
     new MultipageWebpackPlugin()

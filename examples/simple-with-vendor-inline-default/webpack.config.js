@@ -6,7 +6,7 @@ let config = {
   context: __dirname,
   entry: {
     a: './src/a/a.js',
-    b: './src/b/b.js',
+    b: './src/b/b.js', 
     c: './src/c/c.js',
     vendor: ['lodash']
   },

@@ -21,3 +21,15 @@ Currently to architecht a webpack configuration for multi page web applications,
     });
   } 
   ```
+
+# Development
+
+- `npm install`
+
+
+## Single Test Build
+- `npm t` 
+
+
+## Test Watch
+- `npm run test:watch`
