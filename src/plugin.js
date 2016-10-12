@@ -18,10 +18,6 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
     return entry !== this.pluginOptions.vendorChunkName;
   });
 
-  console.log("ENTRIES: ", entriesToCreateTemplatesFor);
-  console.log("SHARED: ", this.pluginOptions.sharedChunkName);
-
-
   entriesToCreateTemplatesFor.forEach( entryKey => {
     compiler.apply(
       new HtmlWebpackPlugin({
