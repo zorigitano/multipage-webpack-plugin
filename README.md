@@ -1,4 +1,9 @@
-# Problem
+# multipage-webpack-plugin
+[![Build Status](https://travis-ci.org/mutualofomaha/multipage-webpack-plugin.svg?branch=master)](https://travis-ci.org/mutualofomaha/multipage-webpack-plugin)
+
+webpack plugin that allows for trivial configuration for multi page web applications
+
+## Problem
 
 Currently to architecht a webpack configuration for multi page web applications, there are many requirements for managing all assets and entry points. 
 
@@ -22,14 +27,14 @@ Currently to architecht a webpack configuration for multi page web applications,
   } 
   ```
 
-# Development
+### Development
 
 - `npm install`
 
 
-## Single Test Build
+### Single Test Build
 - `npm t` 
 
 
-## Test Watch
+### Test Watch
 - `npm run test:watch`
