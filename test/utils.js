@@ -14,12 +14,9 @@ exports.runWebpackCompilerMemoryFs = function runWebpackCompiler(config, options
   // which is slow as hell
 
   const outputfs = compiler.outputFileSystem = new MemoryFS();
-  const readdir = Promise.promisify(outputfs.readdir, {context: outputfs});
-  const readFile = Promise.promisify(outputfs.readFile, {context: outputfs});
+
   const stat = Promise.promisify(outputfs.stat, {context: outputfs});
-  const fsReaddir = Promise.promisify(fs.readdir, {context: fs});
-  const fsReadFile = Promise.promisify(fs.readFile, {context: fs});
-  const fsStat = Promise.promisify(fs.stat, {context: fs});
+
   const run = Promise.promisify(compiler.run, {context: compiler});
 
   return run()
