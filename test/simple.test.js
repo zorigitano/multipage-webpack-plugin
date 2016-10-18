@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as fs from 'fs';
 import test from 'ava';
 import {runWebpackCompilerMemoryFs, runWebpackCompiler} from './utils.js';
 const rimraf = require('rimraf');
@@ -18,8 +19,29 @@ test('webpack should run successfully', async t => {
   t.falsy(warnings.length && errors.length);
 });
 
-test.skip('it should emit a template for each entry point', async t => {
-  
+test('it should have 1 more js bundles than entries', async t => {
+  	let	{stats, warnings, errors} = t.context.stats;
+  	let buildPath = path.resolve(simpleExamplePath, './dist');
+  	fs.readdir(buildPath, (err, fsStats) => {
+  		let emittedChunkCount = fsStats.filter(path => {return path.match(/\.js$/)}).length;
+	  	let entryCount = Object.keys(stats.compilation.options.entry).length;
+
+	  	t.true(entryCount === emittedChunkCount - 1);
+  	});
+});
+
+test('it should contain inline.js file', async t => {
+	let	{stats, warnings, errors} = t.context.stats;
+  	let buildPath = path.resolve(simpleExamplePath, './dist');
+
+  	fs.readdir(buildPath, (err, fsStats) => {
+
+
+
+
+
+  		
+  	})
 });
 
 test.skip('it should emit template into default path', async t => {

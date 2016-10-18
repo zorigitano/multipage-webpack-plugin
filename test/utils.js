@@ -32,7 +32,6 @@ exports.runWebpackCompilerMemoryFs = function runWebpackCompiler(config, options
       return {
         assets,
         entrypoints,
-        outputfs,
         errors,
         warnings,
         stats,

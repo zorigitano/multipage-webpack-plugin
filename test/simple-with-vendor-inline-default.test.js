@@ -11,7 +11,7 @@ test.beforeEach('run webpack build first', async t => {
 });
 
 // Run
-test('webpack should run successfully', async t => {
+test.skip('webpack should run successfully', async t => {
   let {stats, warnings, errors} = t.context.stats;
 
   t.falsy(warnings.length && errors.length);
