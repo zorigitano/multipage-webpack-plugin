@@ -21,7 +21,7 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
   entriesToCreateTemplatesFor.forEach( entryKey => {
     compiler.apply(
       new HtmlWebpackPlugin({
-        filename: `./templates/${entryKey}/template.html`,
+        filename: `./templates/${entryKey}/index.html`,
         chunkSortMode: 'dependency',
         chunks: ['inline', this.pluginOptions.vendorChunkName, entryKey, this.pluginOptions.sharedChunkName]
       })
