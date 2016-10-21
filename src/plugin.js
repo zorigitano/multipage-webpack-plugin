@@ -3,11 +3,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 
 function MultipageWebpackPlugin(pluginOptions) {
-  this.pluginOptions = pluginOptions || {
+  this.pluginOptions = {} || {
     sharedChunkName: "shared",
-    vendorChunkName: "vendor"
-  };
-};
+    vendorChunkName: "vendor",
+    inlineChunkName: "inline"
+  }
+}
 
 module.exports = MultipageWebpackPlugin;
 
@@ -30,14 +31,14 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
 
   compiler.apply(
     new webpack.optimize.CommonsChunkPlugin({
-      name: `${this.pluginOptions.sharedChunkName}`,
-      filename: `${this.pluginOptions.sharedChunkName}.bundle.js`,
+      name: "shared",
       minChunks: 2,
       chunks: Object.keys(webpackConfigOptions.entry)
     }),      
     new webpack.optimize.CommonsChunkPlugin({
-      name: "vendors",
-      minChunks: Infinity
+      name: "vendor",
+      minChunks: Infinity,
+      chunks: ["vendor"]
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: "inline",

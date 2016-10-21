@@ -28,6 +28,12 @@
     "babel-preset-stage-3": "^6.17.0",
     "babel-register": "^6.16.3",
     "bluebird": "^3.4.6",
+    "eslint": "^3.8.1",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-ava": "^3.1.1",
+    "eslint-plugin-import": "^2.0.1",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.4.1",
     "hard-source-webpack-plugin": "^0.1.0",
     "html-webpack-plugin": "^2.22.0",
     "memory-fs": "^0.3.0",
@@ -45,5 +51,11 @@
     "require": [
       "babel-register"
     ]
+  },
+  "eslintConfig": {
+    "plugins": [
+      "ava"
+    ],
+    "extends": "plugin:ava/recommended"
   }
 }
