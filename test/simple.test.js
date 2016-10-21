@@ -76,17 +76,19 @@ test('each template should match their entry point', async t => {
   t.deepEqual(itemsInTemplatePath, entryCount);
 });
 
-test('template contains script tags for chunks', async t => {
+test('each template should contain the correct script tags in it', async t => {
   let {stats, warnings, errors} = webpackBuildStats;
   
   // Returns Buffer
-  let templateContent = await readFile(path.join(webpackBuildPath, "templates", "a", "index.html"));
-
   t.true(
-    templateContent
-      .toString()
-      .match(`<script type="text/javascript" src="../../inline.chunk.js"></script><script type="text/javascript" src="../../a.chunk.js"></script>`)
-      .length > 0
+    Object.keys(stats.compilation.options.entry).every(async (entryName) => {
+      let templateContent = await readFile(path.join(webpackBuildPath, "templates", entryName, "index.html"));
+
+      return templateContent
+        .toString()
+        .match(`<script type="text/javascript" src="../../inline.chunk.js"></script><script type="text/javascript" src="../../${entryName}.chunk.js"></script>`)
+        .length > 0
+      })
   );
 });
 
