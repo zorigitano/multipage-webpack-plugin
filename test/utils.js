@@ -1,28 +1,25 @@
-var MemoryFS = require('memory-fs');
-var Promise = require('bluebird');
-var webpack = require('webpack');
-var rimraf = require('rimraf');
+const MemoryFS = require("memory-fs");
+const Promise = require("bluebird");
+const webpack = require("webpack");
 
-var fs = require('fs');
-var path = require('path');
+const outputfs = new MemoryFS();
 
-exports.runWebpackCompilerMemoryFs = function runWebpackCompiler(config, options) {
+exports.runWebpackCompilerMemoryFs = function runWebpackCompiler(config) {
   const compiler = webpack(config);
 
-  // Set the compiler output fs to be memoryFS, 
+  // Set the compiler output fs to be memoryFS,
   // This way we aren't outputting to file 1034234 times
   // which is slow as hell
 
-  const outputfs = compiler.outputFileSystem = new MemoryFS();
-  const stat = Promise.promisify(outputfs.stat, {context: outputfs});
-  const run = Promise.promisify(compiler.run, {context: compiler});
+  compiler.outputFileSystem = outputfs;
+  const run = Promise.promisify(compiler.run, { context: compiler });
 
   return run()
-    .then(function(stats) {
-      let { compilation } = stats,
-          { errors, warnings, assets, entrypoints } = compilation;
+    .then((stats) => {
+      const { compilation } = stats;
+      const { errors, warnings, assets, entrypoints } = compilation;
 
-      let statsJson = stats.toJson();
+      const statsJson = stats.toJson();
 
       return {
         assets,
@@ -30,7 +27,25 @@ exports.runWebpackCompilerMemoryFs = function runWebpackCompiler(config, options
         errors,
         warnings,
         stats,
-        statsJson
+        statsJson,
       };
     });
 };
+
+exports.getEntryKeysFromStats = function getEntryKeysFromStatsFn(statsObject) {
+  let entryKeys = null;
+
+  if (
+    statsObject &&
+    statsObject.compilation &&
+    statsObject.compilation.options &&
+    statsObject.compilation.options.entry
+  ) {
+    entryKeys = Object.keys(statsObject.compilation.options.entry);
+  }
+
+  return entryKeys;
+};
+
+exports.testFs = outputfs;
+

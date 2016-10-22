@@ -5,8 +5,6 @@ const rimraf = require('rimraf');
 const simpleConfig = require('../examples/simple-with-vendor/webpack.config.js');
 const simpleExamplePath = path.resolve(__dirname, '../examples/simple-with-vendor');
 
-
-
 test.beforeEach('run webpack build first', async t => {
   t.context.stats = await runWebpackCompilerMemoryFs(simpleConfig);
 });
@@ -22,15 +20,15 @@ test.skip('it should emit a template for each entry point', async t => {
   
 });
 
-test.skip('it should emit template into default path', async t => {
+test.skip('', async t => {
   
 });
 
-test.skip('each template should have an inline.chunk.js', async t => {
+test.skip('', async t => {
   
 });
 
-test.skip('each template should match their entry point', async t => {
+test.skip('', async t => {
   
 });
 
