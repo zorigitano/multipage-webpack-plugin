@@ -1,3 +1,8 @@
 import has from 'lodash/has'
 
-console.log("Module B");
+const foo = {
+	bar: 'WORLD',
+	baz: 'OKAY'
+}
+
+console.log("Module B", has(foo, 'bar'));
