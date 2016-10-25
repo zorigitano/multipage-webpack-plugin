@@ -48,6 +48,16 @@ test('output directory should match config output.path', async t => {
 
 });
 
+test('the default template extension should be .html', async t => {
+  let {stats, warnings, errors} = webpackBuildStats;
+  let outputDirectory;
+
+  getEntryKeysFromStats(stats).every(async entryName => {
+    return entryName.match(/\.html$/);
+  })
+
+});
+
 // This tests should change for each fixture based on shared chunks or css chunks or vendor chunks etc.
 test('it should have 1 more js bundles than entries', async t => {
     let {stats, warnings, errors} = webpackBuildStats;
