@@ -76,3 +76,34 @@ test('should not create template for shared chunk', async t => {
 
   t.truthy(directoryContents.indexOf("shared"));
 });
+
+test('each default template should match their entry point', async t => {
+  let {stats, warnings, errors} = webpackBuildStats;
+  let itemsInBuildPath = await readdir(webpackBuildPath);
+  let itemsInTemplatePath = await readdir(path.join(webpackBuildPath, "templates"));
+  let entryCount = getEntryKeysFromStats(stats)
+    .filter(entry => {
+      return entry != "vendor";
+    });
+  
+  console.log(entryCount, itemsInTemplatePath);
+
+  t.deepEqual(itemsInTemplatePath, entryCount);
+});
+
+test.skip('it should not create shared/index.html template', async t => {
+});
+
+test.skip('it should not create vendor/index.html template', async t => {
+  let itemsInBuildPath = await readdir(webpackBuildPath);
+  let itemsInTemplatePath = await readdir(path.join(webpackBuildPath, "templates"));
+});
+
+test.skip('should contain templates with references to shared chunk', async t => {
+  let {stats, warnings, errors} = webpackBuildStats;
+  let entryKeys = getEntryKeysFromStats(stats);
+});
+
+
+
+

@@ -2,12 +2,12 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 
-function MultipageWebpackPlugin(pluginOptions) {
-  this.pluginOptions = {} || {
-    sharedChunkName: "shared",
-    vendorChunkName: "vendor",
-    inlineChunkName: "inline"
-  }
+function MultipageWebpackPlugin(pluginOptions) { 
+  pluginOptions = pluginOptions || {};
+
+  this.vendorChunkName = pluginOptions.vendorChunkName || "vendor";
+  this.inlineChunkName = pluginOptions.inlineChunkName || "inline";
+  this.sharedChunkName = pluginOptions.sharedChunkName || "shared";
 }
 
 module.exports = MultipageWebpackPlugin;
@@ -16,15 +16,22 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
   let webpackConfigOptions = compiler.options;
 
   let entriesToCreateTemplatesFor = Object.keys(webpackConfigOptions.entry).filter(entry => {
-    return entry !== this.pluginOptions.vendorChunkName;
+    return entry !== this.vendorChunkName;
   });
+
+  console.log(entriesToCreateTemplatesFor);
 
   entriesToCreateTemplatesFor.forEach( entryKey => {
     compiler.apply(
       new HtmlWebpackPlugin({
         filename: `./templates/${entryKey}/index.html`,
         chunkSortMode: 'dependency',
-        chunks: ['inline', this.pluginOptions.vendorChunkName, entryKey, this.pluginOptions.sharedChunkName]
+        chunks: [
+          'inline', 
+          this.vendorChunkName, 
+          entryKey, 
+          this.sharedChunkName
+        ]
       })
     );
   });
@@ -37,7 +44,7 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
     }),      
     new webpack.optimize.CommonsChunkPlugin({
       name: "vendor",
-      minChunks: Infinity,
+      minChunks: this.vendorChunkName ? (module) => {return module.resource.test(/node_modules/)} : Infinity,
       chunks: ["vendor"]
     }),
     new webpack.optimize.CommonsChunkPlugin({
@@ -46,6 +53,5 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
       minChunks: Infinity
     })
   );
-
 
 };

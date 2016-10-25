@@ -8,7 +8,12 @@ webpackJsonp([3,5],{
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_has__);
 
 
-console.log("Module B");
+const foo = {
+	bar: 'WORLD',
+	baz: 'OKAY'
+}
+
+console.log("Module B", __WEBPACK_IMPORTED_MODULE_0_lodash_has___default()(foo, 'bar'));
 
 /***/ }
 
