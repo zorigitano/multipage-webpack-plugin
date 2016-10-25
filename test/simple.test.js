@@ -87,7 +87,9 @@ test('should create a default template subdirectory for each entry point', async
   let {stats, warnings, errors} = webpackBuildStats;
 
   getEntryKeysFromStats(stats).every(async entryName => {
-    let dirStats = await fsStat(path.join(webpackBuildPath, "templates", entryName));
+    let dirStats = await fsStat(
+      path.join(webpackBuildPath, "templates", entryName)
+    );
 
     return dirStats && dirStats.isDirectory();
   })

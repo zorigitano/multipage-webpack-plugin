@@ -38,3 +38,41 @@ test('it should run successfully', async t => {
 
   t.falsy(stats.hasWarnings() && errors.hasWarnings());
 });
+
+test('it should extract modules used in multiple entrypoints into a separate chunk', async t => {
+  let {stats, warnings, errors} = webpackBuildStats;
+
+  let chunkStats = stats.compilation.chunks
+    .map(chunk => {
+      return {
+        name: chunk.name,
+        id: chunk.id,
+        modules: chunk.modules.map(module => {return module.id})
+      };
+    });
+
+  let sharedChunkModules = new Set(chunkStats.find((chunkStatObject) => {return chunkStatObject.name === "shared"}).modules);
+
+  function uniqueModuleInEachChunk() {
+    return chunkStats
+      .filter(chunk => chunk.name != "shared")
+      .every(chunk => chunk.modules
+        .every(moduleId => !sharedChunkModules.has(moduleId))
+      );
+  }
+
+  t.true(uniqueModuleInEachChunk(), 'each module in each chunk is unique');
+});
+
+test('it should emit shared chunk into default output path', async t => {
+  let {stats, warnings, errors} = webpackBuildStats;
+  let dirStats = await fsStat(path.join(webpackBuildPath, "shared.chunk.js"));
+
+  t.truthy(dirStats);
+});
+
+test('should not create template for shared chunk', async t => {
+  let directoryContents = await fsReaddir(path.join(webpackBuildPath, "templates"));
+
+  t.truthy(directoryContents.indexOf("shared"));
+});
