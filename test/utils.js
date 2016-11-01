@@ -48,4 +48,3 @@ exports.getEntryKeysFromStats = function getEntryKeysFromStatsFn(statsObject) {
 };
 
 exports.testFs = outputfs;
-
