@@ -35,7 +35,7 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
   compiler.apply(
     new webpack.optimize.CommonsChunkPlugin({
       name: "shared",
-      minChunks: 2,
+      minChunks: entriesToCreateTemplatesFor.length || 3,
       chunks: Object.keys(webpackConfigOptions.entry)
     }),      
     new webpack.optimize.CommonsChunkPlugin({
