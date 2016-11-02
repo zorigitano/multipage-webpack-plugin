@@ -26,8 +26,9 @@ let config = {
   context: __dirname,
   entry: buildEntries,
   output: {
+    publicPath: 'public/js',
     filename: '[name].chunk.js',
-    path: path.resolve(__dirname,'./dist')
+    path: path.resolve(__dirname,'./public/js')
   },
   plugins: [
     new MultipageWebpackPlugin()
@@ -35,3 +36,9 @@ let config = {
 };
 
 module.exports = config;
+
+// output: {
+//     path: `${publicRoot}/js`,
+//     filename: "[name].bundle.js",
+//     publicPath: `${packageRoot}/js`,
+// }
