@@ -31,7 +31,10 @@ let config = {
     path: path.resolve(__dirname,'./dist/js')
   },
   plugins: [
-    new MultipageWebpackPlugin()
+    new MultipageWebpackPlugin({
+      templateFilename: '[name].twig', 
+      templatePath: path.resolve(__dirname, './resources/views/webpack-partials')
+    })
   ]
 };
 
