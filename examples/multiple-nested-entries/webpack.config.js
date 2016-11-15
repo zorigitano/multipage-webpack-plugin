@@ -13,6 +13,8 @@ for (let packageName of packages) {
   let packageEntryPath = path.join(__dirname, 'packages', 'subfolder', packageName, 'src', 'resources', 'assets')
   let entries = fs.readdirSync(packageEntryPath);
 
+  console.log(packageName);
+
   entries.forEach(entryDirectoryName => {
     // TODO: Maybe a cooler name thats not so lame (and not rhyming in this todo)
     let buildEntriesKeyName = `entry${entryDirectoryName}ForPackage${packageName}`;
@@ -33,7 +35,7 @@ let config = {
   plugins: [
     new MultipageWebpackPlugin({
       templateFilename: '[name].twig', 
-      templatePath: path.resolve(__dirname, './resources/views/webpack-partials')
+      templatePath: path.join(__dirname, 'resources','views','webpack-partials')
     })
   ]
 };

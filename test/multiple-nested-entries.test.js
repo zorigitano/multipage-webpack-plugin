@@ -10,8 +10,8 @@ import {
 
 const fs = testFs; // Use shared memoryfs instance
 const webpackConfig = require("../examples/multiple-nested-entries/webpack.config.js");
-const simpleExamplePath = path.resolve(__dirname, "../examples/multiple-nested-entries");
-const webpackBuildPath = path.resolve(simpleExamplePath, './dist');
+const examplePath = path.resolve(__dirname, "../examples/multiple-nested-entries");
+const webpackBuildPath = path.join(examplePath);
 
 // Convienence to use async await with these common fs functions
 const readdir = Promise.promisify(fs.readdir, {context: fs});
@@ -42,24 +42,26 @@ test('it should run successfully', async t => {
 test('it should emit templates to the correct path', async t => {
   let {stats, warnings, errors} = webpackBuildStats;
 
-  let pathToTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials'));
+  let pathToTemplateDir = await readdir(path.resolve(examplePath, './resources/views/webpack-partials'));
 
   t.true(pathToTemplateDir && pathToTemplateDir.length > 0);  
 });
 
 test('it should create templates for each entry', async t => {
   let {stats, warnings, errors} = webpackBuildStats;
-
-  let pathToTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials'));
+  let templateDir = path.resolve(examplePath, './resources/views/webpack-partials')
+  let pathToTemplateDir = await readdir(templateDir);
 
   t.true(getEntryKeysFromStats(stats).every(async entryName => {
-    let dirStats = await fsStat(
-      path.join(pathToTemplateDir, `${entryName}.twig`)
-    );
-
-    return dirStats && dirStats.isFile();
+    try {
+      let dirStats = await fsStat(
+        path.resolve(templateDir, entryName + ".twig")
+      );
+      return dirStats && dirStats.isFile(); 
+    } catch(e) {
+      console.log(e);
+    }
   }))
-
 });
 
 test.todo('it should output templates with .twig extension');
