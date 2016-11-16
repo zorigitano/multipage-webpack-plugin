@@ -34,36 +34,66 @@ test.before('run webpack build first', async t => {
 });
 
 test('it should run successfully', async t => {
-  let {stats, warnings, errors} = webpackBuildStats;
+  const {stats, warnings, errors} = webpackBuildStats;
 
   t.falsy(stats.hasWarnings() && errors.hasWarnings());
 });
 
-test('it should emit templates to the correct path', async t => {
-  let {stats, warnings, errors} = webpackBuildStats;
-
-  let pathToTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials'));
+test.skip('it should emit templates to the correct path', async t => {
+  const {stats, warnings, errors} = webpackBuildStats,
+        pathToTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials'));
 
   t.true(pathToTemplateDir && pathToTemplateDir.length > 0);  
 });
 
-test('it should create templates for each entry', async t => {
-  let {stats, warnings, errors} = webpackBuildStats;
-
-  let pathToTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials'));
+test.skip('it should create templates for each entry', async t => {
+  const {stats, warnings, errors} = webpackBuildStats,
+        pathToTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials'));
 
   t.true(getEntryKeysFromStats(stats).every(async entryName => {
-    let dirStats = await fsStat(
+    const dirStats = await fsStat(
       path.join(pathToTemplateDir, `${entryName}.twig`)
     );
 
     return dirStats && dirStats.isFile();
-  }))
+  }));
 
 });
 
-test.todo('it should output templates with .twig extension');
+test('it should output templates with .twig extension', async t => {
+  const {stats, warnings, errors} = webpackBuildStats,
+        itemsInTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials/'));
 
-test.todo('it should emit chunks in correct path');
+  t.true(itemsInTemplateDir.every(async file => {
+    return file.endsWith('.twig');
+  }));
 
-test.todo('each tempalte should only contain script tags');
+});
+
+test('it should emit chunks in correct path', async t => {
+  const {stats, warnings, errors} = webpackBuildStats;
+
+  t.true(getEntryKeysFromStats(stats).every(async entryName => {
+    const dirStats = await fsStat(
+      path.join(webpackBuildPath, `${entryName}.bundle.js`)
+    );
+
+    return dirStats && dirStats.isFile();
+  }));
+});
+
+test('each template should only contains script tags', async t => {
+  const {stats, warnings, errors} = webpackBuildStats,
+        pathToTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials'));
+
+  t.true(getEntryKeysFromStats(stats).every(async entryName => {
+    const templateContent = await readFile(
+      path.join(pathToTemplateDir, `${entryName}.twig`)
+    );
+
+    return templateContent
+      .toString()
+      .match(`<script type="text/javascript" src="../../inline.chunk.js"></script><script type="text/javascript" src="../../vendors.chunk.js"></script><script type="text/javascript" src="../../shared.chunk.js"></script><script type="text/javascript" src="../../${entryName}.chunk.js"></script>`)
+      .length > 0
+    });
+});
