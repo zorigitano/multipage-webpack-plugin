@@ -630,17 +630,23 @@ module.exports = baseToString;
 /***/ function(module, exports, __webpack_require__) {
 
 var isArray = __webpack_require__(3),
-    stringToPath = __webpack_require__(48);
+    isKey = __webpack_require__(33),
+    stringToPath = __webpack_require__(48),
+    toString = __webpack_require__(56);
 
 /**
  * Casts `value` to a path array if it's not one.
  *
  * @private
  * @param {*} value The value to inspect.
+ * @param {Object} [object] The object to query keys on.
  * @returns {Array} Returns the cast property path array.
  */
-function castPath(value) {
-  return isArray(value) ? value : stringToPath(value);
+function castPath(value, object) {
+  if (isArray(value)) {
+    return value;
+  }
+  return isKey(value, object) ? [value] : stringToPath(toString(value));
 }
 
 module.exports = castPath;
@@ -748,7 +754,6 @@ var castPath = __webpack_require__(21),
     isArguments = __webpack_require__(52),
     isArray = __webpack_require__(3),
     isIndex = __webpack_require__(32),
-    isKey = __webpack_require__(33),
     isLength = __webpack_require__(54),
     toKey = __webpack_require__(49);
 
@@ -762,7 +767,7 @@ var castPath = __webpack_require__(21),
  * @returns {boolean} Returns `true` if `path` exists, else `false`.
  */
 function hasPath(object, path, hasFunc) {
-  path = isKey(path, object) ? [path] : castPath(path);
+  path = castPath(path, object);
 
   var index = -1,
       length = path.length,
@@ -1360,8 +1365,7 @@ module.exports = objectToString;
 /* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
-var memoizeCapped = __webpack_require__(46),
-    toString = __webpack_require__(56);
+var memoizeCapped = __webpack_require__(46);
 
 /** Used to match property names within property paths. */
 var reLeadingDot = /^\./,
@@ -1378,8 +1382,6 @@ var reEscapeChar = /\\(\\)?/g;
  * @returns {Array} Returns the property path array.
  */
 var stringToPath = memoizeCapped(function(string) {
-  string = toString(string);
-
   var result = [];
   if (reLeadingDot.test(string)) {
     result.push('');

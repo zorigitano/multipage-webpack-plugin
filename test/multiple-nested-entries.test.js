@@ -11,7 +11,7 @@ import {
 const fs = testFs; // Use shared memoryfs instance
 const webpackConfig = require("../examples/multiple-nested-entries/webpack.config.js");
 const examplePath = path.resolve(__dirname, "../examples/multiple-nested-entries");
-const webpackBuildPath = path.join(examplePath);
+const webpackBuildPath = path.join(examplePath, "dist","js");
 
 // Convienence to use async await with these common fs functions
 const readdir = Promise.promisify(fs.readdir, {context: fs});
@@ -49,7 +49,7 @@ test('it should emit templates to the correct path', async t => {
 
 test('it should create templates for each entry', async t => {
   let {stats, warnings, errors} = webpackBuildStats;
-  let templateDir = path.resolve(examplePath, './resources/views/webpack-partials')
+  let templateDir = path.resolve(examplePath, './resources/views/webpack-partials');
   let pathToTemplateDir = await readdir(templateDir);
 
   t.true(getEntryKeysFromStats(stats).every(async entryName => {
@@ -59,16 +59,17 @@ test('it should create templates for each entry', async t => {
       );
       return dirStats && dirStats.isFile(); 
     } catch(e) {
-      console.log(e);
+      throw(e);
     }
   }))
 });
 
 test('it should output templates with .twig extension', async t => {
-  const {stats, warnings, errors} = webpackBuildStats,
-        itemsInTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials/'));
+  const {stats, warnings, errors} = webpackBuildStats;
+  let templateDir = path.resolve(examplePath, './resources/views/webpack-partials');
+  let pathToTemplateDir = await readdir(templateDir);
 
-  t.true(itemsInTemplateDir.every(async file => {
+  t.true(pathToTemplateDir.every(async file => {
     return file.endsWith('.twig');
   }));
 
@@ -78,26 +79,30 @@ test('it should emit chunks in correct path', async t => {
   const {stats, warnings, errors} = webpackBuildStats;
 
   t.true(getEntryKeysFromStats(stats).every(async entryName => {
-    const dirStats = await fsStat(
-      path.join(webpackBuildPath, `${entryName}.bundle.js`)
-    );
+    let pathToChunks = path.join(webpackBuildPath, entryName + ".chunk.js");
+    try {
+      const dirStats = await fsStat(pathToChunks);
+      return dirStats && dirStats.isFile();
+    } catch(e) {
+      throw(e);
+    }
 
-    return dirStats && dirStats.isFile();
   }));
 });
 
 test('each template should only contains script tags', async t => {
-  const {stats, warnings, errors} = webpackBuildStats,
-        pathToTemplateDir = await readdir(path.resolve(simpleExamplePath, './resources/views/webpack-partials'));
+  const {stats, warnings, errors} = webpackBuildStats;
+  let templateDir = path.resolve(examplePath, './resources/views/webpack-partials');
+  let pathToTemplateDir = await readdir(templateDir);
 
   t.true(getEntryKeysFromStats(stats).every(async entryName => {
     const templateContent = await readFile(
-      path.join(pathToTemplateDir, `${entryName}.twig`)
+      path.join(templateDir, `${entryName}.twig`)
     );
 
     return templateContent
       .toString()
-      .match(`<script type="text/javascript" src="../../inline.chunk.js"></script><script type="text/javascript" src="../../vendors.chunk.js"></script><script type="text/javascript" src="../../shared.chunk.js"></script><script type="text/javascript" src="../../${entryName}.chunk.js"></script>`)
+      .match(`<script type="text/javascript" src="public/js/inline.chunk.js"></script><script type="text/javascript" src="public/js/shared.chunk.js"></script><script type="text/javascript" src="public/js/${entryName}.chunk.js"></script></body>`)
       .length > 0
-    });
+  }));
 });
