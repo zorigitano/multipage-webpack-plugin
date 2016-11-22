@@ -18,25 +18,24 @@ exports.cleanAllExamples = cleanAllExamples;
 function getExamples(){
   return fs.readdirSync(__dirname).filter(function(readdirItem) {
     let itemPath = path.join(__dirname, readdirItem);
-
-
-
+    
     return fs.statSync(itemPath).isDirectory();
   });
 }
 
 function cleanAllExamples() {
   let examplesDistPathNames = getExamples().map(function(exampleName) {
-    return path.resolve(__dirname, exampleName+"/dist")
+    return path.join(__dirname, exampleName, "dist");
   });
 
   for (let path of examplesDistPathNames) {
     console.log("CHECK THIS PATH", path);
-    let pathStat = fs.statSync(path);
-
-
-    if (pathStat.isDirectory()) {
-      rimraf.sync(path);
-    }
+    fs.stat(path, (err, stat) => {
+      if (err) return; 
+    
+      if (stat.isDirectory()) {
+        rimraf.sync(path);
+      }
+    });
   }
 }

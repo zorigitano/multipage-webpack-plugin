@@ -1,19 +1,36 @@
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-
+const TemplatedPathPlugin = require("webpack/lib/TemplatedPathPlugin");
+const path = require("path");
+const TEMPLATED_PATH_REGEXP_NAME = /\[name\]/gi;
 
 function MultipageWebpackPlugin(pluginOptions) {
-
   pluginOptions = pluginOptions || {};
 
   this.sharedChunkName = pluginOptions.sharedChunkName || "shared";
   this.vendorChunkName = pluginOptions.vendorChunkName || "vendor";
   this.inlineChunkName = pluginOptions.inlineChunkName || "inline";
+
+  this.templateFilename = pluginOptions.templateFilename || "index.html";
+  this.templatePath = pluginOptions.templatePath || "templates/[name]";
   
 
 }
 
 module.exports = MultipageWebpackPlugin;
+
+MultipageWebpackPlugin.prototype.getFullTemplatePath = function(entryKey) {
+  let [appliedTemplatedPath, appliedTemplatedFilename] = [this.templatePath, this.templateFilename].map((path, pathIndex) => {
+    const appliedPath = path.replace(TEMPLATED_PATH_REGEXP_NAME, `${entryKey}`);
+    return appliedPath;
+  });
+
+  let fullTemplatePath = path.join(appliedTemplatedPath, appliedTemplatedFilename);
+
+  console.log(fullTemplatePath);
+
+  return fullTemplatePath;
+};
 
 MultipageWebpackPlugin.prototype.apply = function(compiler) {
   let webpackConfigOptions = compiler.options;
@@ -25,7 +42,7 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
   entriesToCreateTemplatesFor.forEach( entryKey => {
     compiler.apply(
       new HtmlWebpackPlugin({
-        filename: `./templates/${entryKey}/index.html`,
+        filename: this.getFullTemplatePath(entryKey),
         chunkSortMode: 'dependency',
         chunks: ['inline', this.vendorChunkName, entryKey, this.sharedChunkName]
       })
@@ -49,6 +66,4 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
       minChunks: Infinity
     })
   );
-
-
 };

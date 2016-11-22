@@ -120,7 +120,3 @@ test('each default template should contain the correct script tags in it', async
       })
   );
 });
-
-
-
-
