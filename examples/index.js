@@ -3,7 +3,6 @@ const path = require('path');
 const rimraf = require('rimraf');
 
 cleanAllExamples();
-console.log(getExamples());
 
 let configs = getExamples().map(function(example) {
   let exampleModule = require(`./${example}/webpack.config.js`);
@@ -29,7 +28,6 @@ function cleanAllExamples() {
   });
 
   for (let path of examplesDistPathNames) {
-    console.log("CHECK THIS PATH", path);
     fs.stat(path, (err, stat) => {
       if (err) return; 
     
