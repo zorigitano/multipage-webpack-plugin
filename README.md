@@ -1,5 +1,6 @@
 # multipage-webpack-plugin
 [![Build Status](https://travis-ci.org/mutualofomaha/multipage-webpack-plugin.svg?branch=master)](https://travis-ci.org/mutualofomaha/multipage-webpack-plugin)
+[![Coverage Status](https://coveralls.io/repos/github/mutualofomaha/multipage-webpack-plugin/badge.svg?branch=master)](https://coveralls.io/github/mutualofomaha/multipage-webpack-plugin?branch=master)
 
 webpack plugin that allows for trivial configuration for multi page web applications
 
