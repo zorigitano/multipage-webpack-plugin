@@ -2,11 +2,13 @@
   "name": "multipage-webpack-plugin",
   "version": "1.0.0",
   "description": "Currently to architecht a webpack configuration for multi page web applications, there are many requirements for managing all assets and entry points.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "src/index.js",
   "scripts": {
+    "build": "BABEL_ENV=production babel --out-dir=dist src/plugin.js",
     "build:examples": "webpack --progress --colors --config ./examples",
     "build:debug": "node --debug-brk --inspect ./node_modules/webpack/bin/webpack.js --config ./examples",
-    "test": "npm run build:examples && ava --verbose",
+    "test": "npm run build:examples && nyc ava",
     "test:watch": "npm test -- --watch"
   },
   "repository": {
@@ -21,6 +23,8 @@
   "homepage": "https://github.com/mutualofomaha/multipage-webpack-plugin#readme",
   "devDependencies": {
     "ava": "^0.16.0",
+    "babel": "^6.5.2",
+    "babel-cli": "^6.18.0",
     "babel-core": "^6.17.0",
     "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.16.0",
@@ -28,6 +32,7 @@
     "babel-preset-stage-3": "^6.17.0",
     "babel-register": "^6.16.3",
     "bluebird": "^3.4.6",
+    "coveralls": "^2.11.15",
     "eslint": "^3.8.1",
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-ava": "^3.1.1",
@@ -40,6 +45,20 @@
     "nyc": "^8.3.1",
     "rimraf": "^2.5.4",
     "webpack": "^2.1.0-beta.27"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "transform-runtime"
+    ],
+    "ignore": "test.js",
+    "env": {
+      "development": {
+        "sourceMaps": "inline"
+      }
+    }
   },
   "ava": {
     "files": [

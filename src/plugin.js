@@ -13,8 +13,6 @@ function MultipageWebpackPlugin(pluginOptions) {
 
   this.templateFilename = pluginOptions.templateFilename || "index.html";
   this.templatePath = pluginOptions.templatePath || "templates/[name]";
-  
-
 }
 
 module.exports = MultipageWebpackPlugin;
