@@ -1,6 +1,6 @@
 {
   "name": "multipage-webpack-plugin",
-  "version": "0.0.0",
+  "version": "0.0.0-semantically-released",
   "description": "Currently to architecht a webpack configuration for multi page web applications, there are many requirements for managing all assets and entry points.",
   "main": "dist/index.js",
   "module": "src/index.js",
