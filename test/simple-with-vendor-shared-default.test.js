@@ -30,11 +30,14 @@ const fsExists = Promise.promisify(fs.exists, {context: fs});
 let webpackBuildStats = null;
 
 test.before('run webpack build first', async t => {
+  webpackConfig.performance = {
+    hints: false
+  };
   webpackBuildStats = await runWebpackCompilerMemoryFs(webpackConfig);
 });
 
 test('it should run successfully', async t => {
   let {stats, warnings, errors} = webpackBuildStats;
 
-  t.falsy(stats.hasWarnings() && errors.hasWarnings());
+  t.falsy(stats.hasWarnings() && stats.hasErrors());
 });

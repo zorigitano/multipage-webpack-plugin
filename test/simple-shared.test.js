@@ -36,7 +36,7 @@ test.before('run webpack build first', async t => {
 test('it should run successfully', async t => {
   let {stats, warnings, errors} = webpackBuildStats;
 
-  t.falsy(stats.hasWarnings() && errors.hasWarnings());
+  t.falsy(stats.hasWarnings() && stats.hasErrors());
 });
 
 test('it should extract modules used in multiple entrypoints into a separate chunk', async t => {
