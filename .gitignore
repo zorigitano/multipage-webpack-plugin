@@ -3,3 +3,5 @@ examples/*/dist
 examples/*/resources/views/webpack-partials/*
 coverage
 .nyc_output
+*.log
+npm-debug.log
