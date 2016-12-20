@@ -6,7 +6,7 @@ webpack plugin that allows for trivial configuration for multi page web applicat
 
 ## Problem
 
-Currently to architecht a webpack configuration for multi page web applications, there are many requirements for managing all assets and entry points. 
+Currently to architect a webpack configuration for multi page web applications, there are many requirements for managing all assets and entry points. 
 
 - In a multipage application every rendered page corresponds to a webpack entry point.
 - Each entry point will have some sort of `index.html` file _or_ a MVC framework specific server template (partial) which renders to html content.
