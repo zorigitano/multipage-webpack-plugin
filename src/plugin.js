@@ -25,8 +25,6 @@ MultipageWebpackPlugin.prototype.getFullTemplatePath = function(entryKey) {
 
   let fullTemplatePath = path.join(appliedTemplatedPath, appliedTemplatedFilename);
 
-  console.log(fullTemplatePath);
-
   return fullTemplatePath;
 };
 
