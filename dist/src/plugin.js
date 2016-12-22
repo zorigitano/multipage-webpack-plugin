@@ -8,6 +8,18 @@ var _slicedToArray2 = require("babel-runtime/helpers/slicedToArray");
 
 var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
 
+var _assign = require("babel-runtime/core-js/object/assign");
+
+var _assign2 = _interopRequireDefault(_assign);
+
+var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require("babel-runtime/helpers/createClass");
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var webpack = require("webpack");
@@ -16,63 +28,76 @@ var TemplatedPathPlugin = require("webpack/lib/TemplatedPathPlugin");
 var path = require("path");
 var TEMPLATED_PATH_REGEXP_NAME = /\[name\]/gi;
 
-function MultipageWebpackPlugin(pluginOptions) {
-  pluginOptions = pluginOptions || {};
+function setPluginOptions(pluginOptions) {
+  var sharedChunkName = pluginOptions.sharedChunkName,
+      vendorChunkName = pluginOptions.vendorChunkName,
+      inlineChunkName = pluginOptions.inlineChunkName,
+      templateFilename = pluginOptions.templateFilename,
+      templatePath = pluginOptions.templatePath;
 
-  this.sharedChunkName = pluginOptions.sharedChunkName || "shared";
-  this.vendorChunkName = pluginOptions.vendorChunkName || "vendor";
-  this.inlineChunkName = pluginOptions.inlineChunkName || "inline";
 
-  this.templateFilename = pluginOptions.templateFilename || "index.html";
-  this.templatePath = pluginOptions.templatePath || "templates/[name]";
+  return {
+    sharedChunkName: sharedChunkName || 'shared',
+    vendorChunkName: vendorChunkName || 'vendor',
+    inlineChunkName: inlineChunkName || 'inline',
+    templateFilename: templateFilename || 'index.html',
+    templatePath: templatePath || 'templates/[name]'
+  };
 }
 
-module.exports = MultipageWebpackPlugin;
+module.exports = function () {
+  function _class() {
+    var pluginOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    (0, _classCallCheck3.default)(this, _class);
 
-MultipageWebpackPlugin.prototype.getFullTemplatePath = function (entryKey) {
-  var _map = [this.templatePath, this.templateFilename].map(function (path, pathIndex) {
-    var appliedPath = path.replace(TEMPLATED_PATH_REGEXP_NAME, "" + entryKey);
-    return appliedPath;
-  }),
-      _map2 = (0, _slicedToArray3.default)(_map, 2),
-      appliedTemplatedPath = _map2[0],
-      appliedTemplatedFilename = _map2[1];
+    (0, _assign2.default)(this, setPluginOptions(pluginOptions));
+  }
 
-  var fullTemplatePath = path.join(appliedTemplatedPath, appliedTemplatedFilename);
+  (0, _createClass3.default)(_class, [{
+    key: "getFullTemplatePath",
+    value: function getFullTemplatePath(entryKey) {
+      var _map = [this.templatePath, this.templateFilename].map(function (pathStr) {
+        return pathStr.replace(TEMPLATED_PATH_REGEXP_NAME, "" + entryKey);
+      }),
+          _map2 = (0, _slicedToArray3.default)(_map, 2),
+          appliedTemplatedPath = _map2[0],
+          appliedTemplatedFilename = _map2[1];
 
-  console.log(fullTemplatePath);
+      return path.join(appliedTemplatedPath, appliedTemplatedFilename);
+    }
+  }, {
+    key: "apply",
+    value: function apply(compiler) {
+      var _this = this;
 
-  return fullTemplatePath;
-};
+      var webpackConfigOptions = compiler.options;
 
-MultipageWebpackPlugin.prototype.apply = function (compiler) {
-  var _this = this;
+      var entriesToCreateTemplatesFor = (0, _keys2.default)(webpackConfigOptions.entry).filter(function (entry) {
+        return entry !== _this.vendorChunkName;
+      });
 
-  var webpackConfigOptions = compiler.options;
+      entriesToCreateTemplatesFor.forEach(function (entryKey) {
+        compiler.apply(new HtmlWebpackPlugin({
+          filename: _this.getFullTemplatePath(entryKey),
+          chunkSortMode: 'dependency',
+          chunks: ['inline', _this.vendorChunkName, entryKey, _this.sharedChunkName]
+        }));
+      });
 
-  var entriesToCreateTemplatesFor = (0, _keys2.default)(webpackConfigOptions.entry).filter(function (entry) {
-    return entry !== _this.vendorChunkName;
-  });
-
-  entriesToCreateTemplatesFor.forEach(function (entryKey) {
-    compiler.apply(new HtmlWebpackPlugin({
-      filename: _this.getFullTemplatePath(entryKey),
-      chunkSortMode: 'dependency',
-      chunks: ['inline', _this.vendorChunkName, entryKey, _this.sharedChunkName]
-    }));
-  });
-
-  compiler.apply(new webpack.optimize.CommonsChunkPlugin({
-    name: "shared",
-    minChunks: entriesToCreateTemplatesFor.length || 3,
-    chunks: (0, _keys2.default)(webpackConfigOptions.entry)
-  }), new webpack.optimize.CommonsChunkPlugin({
-    name: "vendor",
-    minChunks: Infinity,
-    chunks: ["vendor"]
-  }), new webpack.optimize.CommonsChunkPlugin({
-    name: "inline",
-    filename: "inline.chunk.js",
-    minChunks: Infinity
-  }));
-};
+      compiler.apply(new webpack.optimize.CommonsChunkPlugin({
+        name: "shared",
+        minChunks: entriesToCreateTemplatesFor.length || 3,
+        chunks: (0, _keys2.default)(webpackConfigOptions.entry)
+      }), new webpack.optimize.CommonsChunkPlugin({
+        name: "vendor",
+        minChunks: Infinity,
+        chunks: ["vendor"]
+      }), new webpack.optimize.CommonsChunkPlugin({
+        name: "inline",
+        filename: "inline.chunk.js",
+        minChunks: Infinity
+      }));
+    }
+  }]);
+  return _class;
+}();
