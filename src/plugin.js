@@ -37,20 +37,23 @@ class MultipageWebpackPlugin {
   }
 
   apply (compiler) {
+    console.error("HTML TEMPLATE PATH", this.htmlTemplatePath);
+    
     let {options: webpackConfigOptions} = compiler;
     let entriesToCreateTemplatesFor = Object
       .keys(webpackConfigOptions.entry)
       .filter(entry => entry !== this.vendorChunkName);
+      
 
     entriesToCreateTemplatesFor.forEach((entryKey) => {
       let htmlWebpackPluginOptions = {
         filename: this.getFullTemplatePath(entryKey),
         chunkSortMode: 'dependency',
-        chunks: ['inline', this.vendorChunkName, entryKey, this.sharedChunkName],
+        chunks: ['inline', this.vendorChunkName, entryKey, this.sharedChunkName]
       };
 
       if (typeof this.htmlTemplatePath !== "undefined") {
-        htmlWebpackPluginOptions.htmlTemplatePath = this.htmlTemplatePath;
+        htmlWebpackPluginOptions.template = this.htmlTemplatePath;
       }
 
       compiler.apply(

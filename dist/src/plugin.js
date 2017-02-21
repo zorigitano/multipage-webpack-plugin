@@ -57,6 +57,8 @@ var MultipageWebpackPlugin = function () {
     value: function apply(compiler) {
       var _this = this;
 
+      console.error("HTML TEMPLATE PATH", this.htmlTemplatePath);
+
       var webpackConfigOptions = compiler.options;
 
       var entriesToCreateTemplatesFor = Object.keys(webpackConfigOptions.entry).filter(function (entry) {
@@ -71,7 +73,7 @@ var MultipageWebpackPlugin = function () {
         };
 
         if (typeof _this.htmlTemplatePath !== "undefined") {
-          htmlWebpackPluginOptions.htmlTemplatePath = _this.htmlTemplatePath;
+          htmlWebpackPluginOptions.template = _this.htmlTemplatePath;
         }
 
         compiler.apply(new HtmlWebpackPlugin(htmlWebpackPluginOptions));

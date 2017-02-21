@@ -26,7 +26,7 @@ const fsExists = Promise.promisify(fs.exists, {context: fs});
 let webpackBuildStats = null;
 
 simpleConfig.plugins = [
-  new MultipageWebpackPlugin("./template.hbs")
+  new MultipageWebpackPlugin({htmlTemplatePath: path.resolve(__dirname, "../examples/simple/template.ejs")})
 ]
 
 test.before('run webpack build first', async t => {
@@ -40,18 +40,21 @@ test('it should run successfully', async t => {
   t.falsy(stats.hasWarnings() && errors.hasWarnings());
 });
 
-test('each default template should contain the correct script tags in it', async t => {
-  let {stats, warnings, errors} = webpackBuildStats;
-  
-  // Returns Buffer
-  t.true(
-    getEntryKeysFromStats(stats).every(async (entryName) => {
-      let templateContent = await readFile(path.join(webpackBuildPath, "templates", entryName, "index.html"));
 
-      return templateContent
-        .toString()
-        .match(`<script type="text/javascript" src="../../inline.chunk.js"></script><script type="text/javascript" src="../../${entryName}.chunk.js"></script>`)
-        .length > 0
-      })
-  );
+test('custom template should contain the correct content string from template', async t => {
+  let {stats, warnings, errors} = webpackBuildStats;
+  let allTemplatesMatch = true;
+  // Returns Buffer
+  
+  let entries = await getEntryKeysFromStats(stats);
+
+  for(let entryName of entries) {
+    let templateContent = await readFile(path.join(webpackBuildPath, "templates", entryName, "index.html"));
+
+    if (!templateContent.toString().startsWith("<div>TEST TEMPLATE</div>")) {
+      allTemplatesMatch = false;
+    }
+  }
+
+  t.true(allTemplatesMatch);
 });
