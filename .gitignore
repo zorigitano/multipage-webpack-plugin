@@ -5,3 +5,4 @@ coverage
 .nyc_output
 *.log
 npm-debug.log
+.vscode/

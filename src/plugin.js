@@ -10,7 +10,8 @@ function setPluginOptions (pluginOptions) {
     vendorChunkName,
     inlineChunkName,
     templateFilename,
-    templatePath
+    templatePath,
+    htmlTemplatePath,
   } = pluginOptions
 
   return {
@@ -18,7 +19,8 @@ function setPluginOptions (pluginOptions) {
     vendorChunkName: vendorChunkName || 'vendor',
     inlineChunkName: inlineChunkName || 'inline',
     templateFilename: templateFilename || 'index.html',
-    templatePath: templatePath || 'templates/[name]'
+    templatePath: templatePath || 'templates/[name]',
+    htmlTemplatePath: htmlTemplatePath || undefined
   };
 }
 
@@ -41,12 +43,18 @@ class MultipageWebpackPlugin {
       .filter(entry => entry !== this.vendorChunkName);
 
     entriesToCreateTemplatesFor.forEach((entryKey) => {
+      let htmlWebpackPluginOptions = {
+        filename: this.getFullTemplatePath(entryKey),
+        chunkSortMode: 'dependency',
+        chunks: ['inline', this.vendorChunkName, entryKey, this.sharedChunkName],
+      };
+
+      if (typeof this.htmlTemplatePath !== "undefined") {
+        htmlWebpackPluginOptions.htmlTemplatePath = this.htmlTemplatePath;
+      }
+
       compiler.apply(
-        new HtmlWebpackPlugin({
-          filename: this.getFullTemplatePath(entryKey),
-          chunkSortMode: 'dependency',
-          chunks: ['inline', this.vendorChunkName, entryKey, this.sharedChunkName]
-        })
+        new HtmlWebpackPlugin(htmlWebpackPluginOptions)
       );
     });
 
