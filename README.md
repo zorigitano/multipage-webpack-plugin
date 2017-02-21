@@ -41,3 +41,11 @@ Currently to architect a webpack configuration for multi page web applications, 
 - `npm run test:watch`
 
 ## Usage [WIP]
+
+### Plugin Options [WIP]
+`sharedChunkName`
+`vendorChunkName`
+`inlineChunkName`
+`templateFilename`
+`templatePath`
+`htmlTemplatePath`
