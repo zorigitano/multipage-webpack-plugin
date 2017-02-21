@@ -28,7 +28,7 @@ Currently to architect a webpack configuration for multi page web applications, 
   } 
   ```
 
-### Development
+## Development
 
 - `npm install`
 
@@ -39,3 +39,5 @@ Currently to architect a webpack configuration for multi page web applications, 
 
 ### Test Watch
 - `npm run test:watch`
+
+## Usage [WIP]
