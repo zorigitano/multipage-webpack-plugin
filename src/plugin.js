@@ -48,7 +48,7 @@ class MultipageWebpackPlugin {
     entriesToCreateTemplatesFor.forEach((entryKey) => {
       let htmlWebpackPluginOptions = {
         filename: this.getFullTemplatePath(entryKey),
-        chunkSortMode: 'dependency',
+        chunksSortMode: 'dependency',
         chunks: ['inline', this.vendorChunkName, entryKey, this.sharedChunkName]
       };
 
