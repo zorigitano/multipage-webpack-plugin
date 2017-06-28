@@ -9,6 +9,7 @@ function setPluginOptions (pluginOptions) {
     sharedChunkName,
     vendorChunkName,
     inlineChunkName,
+    bootstrapFilename,
     templateFilename,
     templatePath,
     htmlTemplatePath,
@@ -18,6 +19,7 @@ function setPluginOptions (pluginOptions) {
     sharedChunkName: sharedChunkName || 'shared',
     vendorChunkName: vendorChunkName || 'vendor',
     inlineChunkName: inlineChunkName || 'inline',
+    bootstrapFilename: bootstrapFilename || 'inline.chunk.js',
     templateFilename: templateFilename || 'index.html',
     templatePath: templatePath || 'templates/[name]',
     htmlTemplatePath: htmlTemplatePath || undefined
@@ -74,7 +76,7 @@ class MultipageWebpackPlugin {
       }),
       new webpack.optimize.CommonsChunkPlugin({
         name: "inline",
-        filename: "inline.chunk.js",
+        filename: this.bootstrapFilename,
         minChunks: Infinity
       })
     );

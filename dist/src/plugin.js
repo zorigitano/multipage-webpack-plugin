@@ -16,6 +16,7 @@ function setPluginOptions(pluginOptions) {
   var sharedChunkName = pluginOptions.sharedChunkName,
       vendorChunkName = pluginOptions.vendorChunkName,
       inlineChunkName = pluginOptions.inlineChunkName,
+      bootstrapFilename = pluginOptions.bootstrapFilename,
       templateFilename = pluginOptions.templateFilename,
       templatePath = pluginOptions.templatePath,
       htmlTemplatePath = pluginOptions.htmlTemplatePath;
@@ -25,6 +26,7 @@ function setPluginOptions(pluginOptions) {
     sharedChunkName: sharedChunkName || 'shared',
     vendorChunkName: vendorChunkName || 'vendor',
     inlineChunkName: inlineChunkName || 'inline',
+    bootstrapFilename: bootstrapFilename || 'inline.chunk.js',
     templateFilename: templateFilename || 'index.html',
     templatePath: templatePath || 'templates/[name]',
     htmlTemplatePath: htmlTemplatePath || undefined
@@ -68,7 +70,7 @@ var MultipageWebpackPlugin = function () {
       entriesToCreateTemplatesFor.forEach(function (entryKey) {
         var htmlWebpackPluginOptions = {
           filename: _this.getFullTemplatePath(entryKey),
-          chunkSortMode: 'dependency',
+          chunksSortMode: 'dependency',
           chunks: ['inline', _this.vendorChunkName, entryKey, _this.sharedChunkName]
         };
 
@@ -89,7 +91,7 @@ var MultipageWebpackPlugin = function () {
         chunks: ["vendor"]
       }), new webpack.optimize.CommonsChunkPlugin({
         name: "inline",
-        filename: "inline.chunk.js",
+        filename: this.bootstrapFilename,
         minChunks: Infinity
       }));
     }
