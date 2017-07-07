@@ -13,6 +13,7 @@ function setPluginOptions (pluginOptions) {
     templateFilename,
     templatePath,
     htmlTemplatePath,
+    htmlWebpackPluginOptions
   } = pluginOptions
 
   return {
@@ -22,7 +23,8 @@ function setPluginOptions (pluginOptions) {
     bootstrapFilename: bootstrapFilename || 'inline.chunk.js',
     templateFilename: templateFilename || 'index.html',
     templatePath: templatePath || 'templates/[name]',
-    htmlTemplatePath: htmlTemplatePath || undefined
+    htmlTemplatePath: htmlTemplatePath || undefined,
+    htmlWebpackPluginOptions: htmlWebpackPluginOptions || {}
   };
 }
 
@@ -55,11 +57,11 @@ class MultipageWebpackPlugin {
       };
 
       if (typeof this.htmlTemplatePath !== "undefined") {
-        htmlWebpackPluginOptions.template = this.htmlTemplatePath;
+        htmlWebpackPluginOptions.template = this.htmlTemplatePath.replace(TEMPLATED_PATH_REGEXP_NAME, `${entryKey}`);
       }
 
       compiler.apply(
-        new HtmlWebpackPlugin(htmlWebpackPluginOptions)
+        new HtmlWebpackPlugin(Object.assign({}, this.htmlWebpackPluginOptions, htmlWebpackPluginOptions))
       );
     });
 

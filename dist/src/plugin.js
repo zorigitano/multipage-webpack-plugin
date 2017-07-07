@@ -19,7 +19,8 @@ function setPluginOptions(pluginOptions) {
       bootstrapFilename = pluginOptions.bootstrapFilename,
       templateFilename = pluginOptions.templateFilename,
       templatePath = pluginOptions.templatePath,
-      htmlTemplatePath = pluginOptions.htmlTemplatePath;
+      htmlTemplatePath = pluginOptions.htmlTemplatePath,
+      htmlWebpackPluginOptions = pluginOptions.htmlWebpackPluginOptions;
 
 
   return {
@@ -29,7 +30,8 @@ function setPluginOptions(pluginOptions) {
     bootstrapFilename: bootstrapFilename || 'inline.chunk.js',
     templateFilename: templateFilename || 'index.html',
     templatePath: templatePath || 'templates/[name]',
-    htmlTemplatePath: htmlTemplatePath || undefined
+    htmlTemplatePath: htmlTemplatePath || undefined,
+    htmlWebpackPluginOptions: htmlWebpackPluginOptions || {}
   };
 }
 
@@ -75,10 +77,10 @@ var MultipageWebpackPlugin = function () {
         };
 
         if (typeof _this.htmlTemplatePath !== "undefined") {
-          htmlWebpackPluginOptions.template = _this.htmlTemplatePath;
+          htmlWebpackPluginOptions.template = _this.htmlTemplatePath.replace(TEMPLATED_PATH_REGEXP_NAME, "" + entryKey);
         }
 
-        compiler.apply(new HtmlWebpackPlugin(htmlWebpackPluginOptions));
+        compiler.apply(new HtmlWebpackPlugin(Object.assign({}, _this.htmlWebpackPluginOptions, htmlWebpackPluginOptions)));
       });
 
       compiler.apply(new webpack.optimize.CommonsChunkPlugin({
